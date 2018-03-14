@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 class Model(nx.DiGraph):
     def __init__(self, actions, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
         self.actions = {action.name: action for action in actions}
 
         stack = set()
@@ -14,26 +16,25 @@ class Model(nx.DiGraph):
             stack |= set(action.requires().items())
             stack |= set(action.provides().items())
 
+        states = []
         num_devices = len(dict(stack))
-        states = [tuple(sorted(c)) for c in combinations(stack, num_devices)]
-        valid_states = [len(dict(st)) == num_devices for st in states]
+        for _state in combinations(sorted(stack), num_devices):
+            if len(dict(_state)) == num_devices:
+                states += [_state]
 
-        nodes = list(compress(states, valid_states))
+        self.add_nodes_from(states)
 
         edges = []
         for action in actions:
             requires = action.requires()
             provides = action.provides()
-            for node in nodes:
+            for node in self.nodes:
                 if set(requires.items()) <= set(node):
                     destination = dict(node)
                     destination.update(provides)
                     new_node = tuple(sorted(destination.items()))
-                    if new_node in nodes:
+                    if new_node in self.nodes:
                         edges += [(node, new_node, {"name": action.name})]
-
-        super().__init__(self, *args, **kwargs)
-        self.add_nodes_from(nodes)
 
         self.add_edges_from(edges)
 
@@ -73,7 +74,7 @@ def node_to_label(node):
 
 if __name__ == "__main__":
 
-    NUM = 3 
+    NUM = 3
 
     actions = [Switch(num, "ON") for num in range(1, NUM+1)]
     actions += [Switch(num, "OFF") for num in range(1, NUM+1)]
@@ -91,16 +92,18 @@ if __name__ == "__main__":
         print("Step {}:".format(step), end=" ")
         m.actions[name].execute()
 
-    print("\nOnce all lights are on, plot model graph\n")
+    if NUM <= 10:
+        print("\nOnce all lights are on, plot model graph")
 
-    layout = nx.spring_layout(m)
-    labels = {node: node_to_label(node) for node in m.nodes}
-    nx.draw_networkx(m, pos=layout, labels=labels, arrows=False)
-    if NUM <= 3:
-        edge_labels = {edge[:2]: edge[-1] for edge in m.edges.data("name")}
-        nx.draw_networkx_edge_labels(m, pos=layout, edge_labels=edge_labels,
-                                     label_pos=0.75)
+        layout = nx.spring_layout(m)
+        labels = {node: node_to_label(node) for node in m.nodes}
+        nx.draw_networkx(m, pos=layout, labels=labels, arrows=False)
+        if NUM <= 3:
+            edge_labels = {edge[:2]: edge[-1] for edge in m.edges.data("name")}
+            nx.draw_networkx_edge_labels(m, pos=layout,
+                                         edge_labels=edge_labels,
+                                         label_pos=0.75)
 
     plt.show()
 
-    print("Bye")
+    print("\nBye")
