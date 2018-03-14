@@ -1,4 +1,5 @@
-from itertools import combinations, compress
+from itertools import combinations
+import sys
 
 import networkx as nx
 
@@ -72,38 +73,51 @@ def node_to_label(node):
     return label
 
 
-if __name__ == "__main__":
+def main(num_lights):
 
-    NUM = 3
+    if num_lights > 10:
+        print(f"Warning: there are {num_lights*2**num_lights} possible actons "
+              f"to switch on {num_lights} ligths. This will take a while...")
 
-    actions = [Switch(num, "ON") for num in range(1, NUM+1)]
-    actions += [Switch(num, "OFF") for num in range(1, NUM+1)]
+    actions = [Switch(num, "ON") for num in range(1, num_lights+1)]
+    actions += [Switch(num, "OFF") for num in range(1, num_lights+1)]
 
     m = Model(actions)
 
-    print("\nExample on how to switch {} lights on:\n".format(NUM))
+    print("\nExample on how to switch {} lights on:\n".format(num_lights))
 
-    status = {"LIGHT_{}".format(num): "OFF" for num in range(1, NUM+1)}
-    goal = {"LIGHT_{}".format(num): "ON" for num in range(1, NUM+1)}
+    status = {"LIGHT_{}".format(num): "OFF" for num in range(1, num_lights+1)}
+    goal = {"LIGHT_{}".format(num): "ON" for num in range(1, num_lights+1)}
     path = nx.shortest_path(m, tuple(sorted(status.items())),
                             tuple(sorted(goal.items())))
-    for step, (origin, destination) in enumerate(zip(path[:-1], path[1:]), 1):
+    solution = list(zip(path[:-1], path[1:]))
+    for step, (origin, destination) in enumerate(solution, 1):
         name = m[origin][destination]["name"]
         print("Step {}:".format(step), end=" ")
         m.actions[name].execute()
 
-    if NUM <= 10:
+    if num_lights <= 10:
         print("\nOnce all lights are on, plot model graph")
 
-        layout = nx.spring_layout(m)
+        layout = nx.circular_layout(m)
         labels = {node: node_to_label(node) for node in m.nodes}
-        nx.draw_networkx(m, pos=layout, labels=labels, arrows=False)
-        if NUM <= 3:
-            edge_labels = {edge[:2]: edge[-1] for edge in m.edges.data("name")}
-            nx.draw_networkx_edge_labels(m, pos=layout,
-                                         edge_labels=edge_labels,
-                                         label_pos=0.75)
+        node_colors = ["green" if node in path else "gray" for node in m.nodes]
+        edge_colors = ["limegreen" if edge in solution or edge[::-1] in
+                       solution else "black" for edge in m.edges]
+        edge_widths = [1 if edge in solution else 0.1 for edge in m.edges]
 
-    plt.show()
+        nx.draw_networkx(m, pos=layout, labels=labels, arrows=False,
+                         node_color=node_colors, edge_color=edge_colors,
+                         node_size=10, font_size=9, width=edge_widths)
+
+        plt.show()
 
     print("\nBye")
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) != 2:
+        raise SystemExit("Syntax: python3 lights.py <number_of_lights>")
+
+    main(int(sys.argv[1]))
