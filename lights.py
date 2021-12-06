@@ -60,16 +60,24 @@ def main(num_lights):
         print("\nOnce all lights are on, plot domain graph and solution")
 
         labels = {node: node_to_label(node) for node in lights.nodes}
-        node_colors = ["green" if node in lights.path else "gray"
-                       for node in lights.nodes]
-        edge_colors = ["limegreen" if edge in lights.solution or edge[::-1] in
-                       lights.solution else "black" for edge in lights.edges]
-        edge_widths = [1 if edge in lights.solution else 0.1
-                       for edge in lights.edges]
+        node_colors = {node: "green" if node in lights.path else "lightgray"
+                       for node in lights.nodes}
+        edge_colors = {edge: "limegreen" if edge in lights.solution
+                       or edge[::-1] in lights.solution else "gray"
+                       for edge in lights.edges}
+        edge_widths = {edge: 2 if edge in lights.solution else 0.1
+                       for edge in lights.edges}
 
-        lights.plot(labels=labels, arrows=False, node_color=node_colors,
-                    edge_color=edge_colors, node_size=10, font_size=9,
-                    width=edge_widths)
+        if num_lights <= 5:
+            lights.plot(labels=labels, arrows=False, font_size=9,
+                        node_color=node_colors.values(),
+                        edge_color=edge_colors.values(),
+                        width=list(edge_widths.values()))
+
+        else:
+            lights.plot_bokeh(labels=labels, node_color=node_colors,
+                              node_size=10, edge_color=edge_colors,
+                              width=edge_widths)
 
     print("\nBye")
 

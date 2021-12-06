@@ -3,6 +3,8 @@ from itertools import combinations
 import networkx as nx
 
 import matplotlib.pyplot as plt
+import bokeh.plotting as bkplt
+import bokeh.models as mod
 
 
 class Domain(nx.DiGraph):
@@ -59,3 +61,55 @@ class Domain(nx.DiGraph):
         nx.draw_networkx(self, pos=layout, **kwargs)
 
         plt.show()
+
+    def plot_bokeh(self, labels, output_file=None, node_size=4,
+                   node_color=None, width=None, edge_color=None):
+
+        # Unfortunately, nodes in Bokeh have to be strings or ints
+
+        plot_d = nx.DiGraph()
+        plot_d.add_nodes_from([labels[node] for node in self.nodes])
+        plot_d.add_edges_from([(labels[edge[0]], labels[edge[1]])
+                               for edge in self.edges])
+
+        if node_color:
+            node_attributes = {labels[key]: value
+                               for key, value in node_color.items()}
+            nx.set_node_attributes(plot_d, node_attributes, "node_color")
+            fill_color = "node_color"
+        else:
+            fill_color = "gray"
+
+        if edge_color:
+            edge_attributes = {(labels[key[0]], labels[key[1]]): value
+                               for key, value in edge_color.items()}
+            nx.set_edge_attributes(plot_d, edge_attributes, "edge_color")
+            line_color = "edge_color"
+        else:
+            line_color = "black"
+
+        if width:
+            edge_attributes = {(labels[key[0]], labels[key[1]]): value
+                               for key, value in width.items()}
+            nx.set_edge_attributes(plot_d, edge_attributes, "edge_width")
+            line_width = "edge_width"
+        else:
+            line_width = 1
+
+        graph = bkplt.from_networkx(plot_d, nx.circular_layout)
+        graph.node_renderer.glyph = mod.Circle(size=node_size,
+                                               line_color=fill_color,
+                                               fill_color=fill_color)
+        graph.edge_renderer.glyph = mod.MultiLine(line_color=line_color,
+                                                  line_width=line_width)
+
+        plot = mod.Plot()
+        plot.renderers.append(graph)
+        node_hover_tool = mod.HoverTool(tooltips=[("lights", "@index")])
+        plot.add_tools(node_hover_tool, mod.PanTool(), mod.BoxZoomTool(),
+                       mod.WheelZoomTool(), mod.SaveTool(), mod.ResetTool())
+
+        if output_file:
+            bkplt.output_file(output_file)
+
+        bkplt.show(plot)

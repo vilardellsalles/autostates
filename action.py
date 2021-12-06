@@ -7,11 +7,14 @@ class Action(ABC):
     def name(self):
         pass
 
+    @abstractmethod
     def requires(self):
         pass
 
+    @abstractmethod
     def provides(self):
         pass
 
+    @abstractmethod
     def execute(self):
         pass

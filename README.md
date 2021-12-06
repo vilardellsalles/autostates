@@ -19,7 +19,15 @@ with the chosen solution:
 solution](./lights.svg "Diagram with all possible actions in a group of three
 lights and the chosen solution")
 
+In case that the number of lights is larger than 5, a
+[Bokeh](https://docs.bokeh.org/en/latest/index.html) plot is used to allow the
+possibility to hover over all the possible light states:
+
+![Diagram with all possible actions in a group of seven lights and the chosen
+solution](./lights_bokeh.png "Diagram with all possible actions in a group of
+seven lights and the chosen solution")
+
 You can try to change the number of lights, but I would recommend not to make
 it larger than 15. With 15 lights, you will have almost half a milion possible
-actions. It will take some time to choose one of the possible ways to switch on
-all lights.
+actions.  It will take some time to choose one of the possible ways to switch
+on all lights.
