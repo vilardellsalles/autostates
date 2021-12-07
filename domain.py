@@ -68,9 +68,16 @@ class Domain(nx.DiGraph):
         # Unfortunately, nodes in Bokeh have to be strings or ints
 
         plot_d = nx.DiGraph()
-        plot_d.add_nodes_from([labels[node] for node in self.nodes])
+        plot_d.add_nodes_from([(labels[node], dict(node))
+                               for node in self.nodes])
         plot_d.add_edges_from([(labels[edge[0]], labels[edge[1]])
                                for edge in self.edges])
+
+        tooltips = []
+        for node, data in plot_d.nodes(data=True):
+            for key in data:
+                tooltips += [(key, f"@{key}")]
+            break
 
         if node_color:
             node_attributes = {labels[key]: value
@@ -105,7 +112,8 @@ class Domain(nx.DiGraph):
 
         plot = mod.Plot()
         plot.renderers.append(graph)
-        node_hover_tool = mod.HoverTool(tooltips=[("lights", "@index")])
+        tooltips = [("label", "@index")] + tooltips
+        node_hover_tool = mod.HoverTool(tooltips=tooltips)
         plot.add_tools(node_hover_tool, mod.PanTool(), mod.BoxZoomTool(),
                        mod.WheelZoomTool(), mod.SaveTool(), mod.ResetTool())
 
