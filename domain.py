@@ -112,7 +112,7 @@ class Domain(nx.DiGraph):
 
         plot = mod.Plot()
         plot.renderers.append(graph)
-        tooltips = [("label", "@index")] + tooltips
+        tooltips = [("Label", "@index")] + tooltips
         node_hover_tool = mod.HoverTool(tooltips=tooltips)
         plot.add_tools(node_hover_tool, mod.PanTool(), mod.BoxZoomTool(),
                        mod.WheelZoomTool(), mod.SaveTool(), mod.ResetTool())

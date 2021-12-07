@@ -18,7 +18,7 @@ algorithm implemented here:
 
 * [Lights](lights.md). Example showing how to find a way to switch multiple
 lights on.
-* [Leia](leia.md). Example used in
+* [LEIA](leia.md). Example used in
 [PlanSys 2](https://intelligentroboticslab.gsyc.urjc.es/ros2_planning_system.github.io/tutorials/docs/terminal_usage.html)
 to move the LEIA robot from one room o another.
 
@@ -35,7 +35,7 @@ possible actions in a group of seven lights and the chosen solution"><a
 href="./lights_bokeh.png"><img src="./lights_bokeh.png" width="50%"
 /></a></span></p>
 
-### Leia
+### LEIA
 
 <p align="center"><span title="Diagram with all possible actions in a group of
 three lights and the chosen solution"><a href="./leia.svg"><img

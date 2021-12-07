@@ -48,15 +48,6 @@ class Charge(Action):
         print(f"Charging {self.device}")
 
 
-
-def node_to_label(node):
-    label = ""
-    for light in node:
-        label += "1" if light[1] == "ON" else "0"
-
-    return label
-
-
 def main(plot=None):
 
     actions = [Move("LEIA", "Entrance", "Dinning"),
