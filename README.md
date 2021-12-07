@@ -37,9 +37,9 @@ href="./lights_bokeh.png"><img src="./lights_bokeh.png" width="50%"
 
 ### LEIA
 
-<p align="center"><span title="Diagram with all possible actions in a group of
-three lights and the chosen solution"><a href="./leia.svg"><img
-src="./leia.svg" width="50%" /></a></span><span title="Diagram with all
-possible actions in a group of seven lights and the chosen solution"><a
-href="./leia_bokeh.png"><img src="./leia_bokeh.png" width="50%"
-/></a></span></p>
+<p align="center"><span title="Diagram showing all possible LEIA states and
+actions (LEIA domain) and the chosen path to achieve the desired goal"><a
+href="./leia.svg"><img src="./leia.svg" width="50%" /></a></span><span
+title="Diagram showing all possible LEIA states and actions (LEIA domain) and
+the chosen path to achieve the desired goal"><a href="./leia_bokeh.png"><img
+src="./leia_bokeh.png" width="50%" /></a></span></p>

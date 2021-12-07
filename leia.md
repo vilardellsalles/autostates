@@ -34,13 +34,13 @@ Bye
 If `matplotlib` is chosen, the following
 [Matplotlib](https://matplotlib.org/stable/index.html) plot will be produced:
 
-<p align="center"><span title="Diagram with all possible actions in a group of
-three lights and the chosen solution"><a href="./leia.svg"><img
+<p align="center"><span title="Diagram showing all possible LEIA states and
+actions (LEIA domain) and the chosen path to achieve the desired goal"><a href="./leia.svg"><img
 src="./leia.svg" width="50%" /></a></span></p>
 
 If `bokeh` is chosen, the following
 [Bokeh](https://docs.bokeh.org/en/latest/index.html) plot will be produced:
 
-<p align="center"><span title="Diagram with all possible actions in a group of
-seven lights and the chosen solution"><a href="./leia_bokeh.png"><img
+<p align="center"><span title="Diagram showing all possible LEIA states and
+actions (LEIA domain) and the chosen path to achieve the desired goal"><a href="./leia_bokeh.png"><img
 src="./leia_bokeh.png" width="50%" /></a></span></p>
