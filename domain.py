@@ -12,8 +12,8 @@ class Domain(nx.DiGraph):
         super().__init__(self, *args, **kwargs)
 
         self.actions = {action.name: action for action in actions}
-        self.path = None
-        self.solution = None
+        self.path = []
+        self.solution = []
 
         stack = set()
         for action in actions:
@@ -55,15 +55,36 @@ class Domain(nx.DiGraph):
 
         return self.solution
 
-    def plot(self, **kwargs):
+    def plot(self, labels, output_file=None, arrows=False, node_color=None,
+             edge_color=None, width=None, **kwargs):
+        """
+        Create a matplotlib circular plot with domain nodes and chosen path
+        """
+
+        if node_color is None:
+            node_color = ["green" if node in self.path else "lightgray"
+                          for node in self.nodes]
+
+        if edge_color is None:
+            edge_color = ["limegreen" if edge in self.solution or
+                          edge[::-1] in self.solution else "gray"
+                          for edge in self.edges]
+
+        if width is None:
+            width = [2 if edge in self.solution else 0.1
+                     for edge in self.edges]
 
         layout = nx.circular_layout(self)
-        nx.draw_networkx(self, pos=layout, **kwargs)
+        nx.draw_networkx(self, labels=labels, arrows=arrows, pos=layout,
+                         node_color=node_color, edge_color=edge_color,
+                         width=width, **kwargs)
+        if output_file:
+            plt.savefig(output_file)
 
         plt.show()
 
     def plot_bokeh(self, labels, output_file=None, node_size=4,
-                   node_color=None, width=None, edge_color=None):
+                   node_color=None, edge_color=None, width=None, **kwargs):
 
         # Unfortunately, nodes in Bokeh have to be strings or ints
 
@@ -79,29 +100,30 @@ class Domain(nx.DiGraph):
                 tooltips += [(key, f"@{key}")]
             break
 
-        if node_color:
-            node_attributes = {labels[key]: value
-                               for key, value in node_color.items()}
-            nx.set_node_attributes(plot_d, node_attributes, "node_color")
-            fill_color = "node_color"
-        else:
-            fill_color = "gray"
+        if node_color is None:
+            node_color = {labels[node]: "green"
+                          if node in self.path else "lightgray"
+                          for node in self.nodes}
 
-        if edge_color:
-            edge_attributes = {(labels[key[0]], labels[key[1]]): value
-                               for key, value in edge_color.items()}
-            nx.set_edge_attributes(plot_d, edge_attributes, "edge_color")
-            line_color = "edge_color"
-        else:
-            line_color = "black"
+        nx.set_node_attributes(plot_d, node_color, "node_color")
+        fill_color = "node_color"
 
-        if width:
-            edge_attributes = {(labels[key[0]], labels[key[1]]): value
-                               for key, value in width.items()}
-            nx.set_edge_attributes(plot_d, edge_attributes, "edge_width")
-            line_width = "edge_width"
-        else:
-            line_width = 1
+        if edge_color is None:
+            edge_color = {(labels[edge[0]], labels[edge[1]]): "limegreen"
+                          if edge in self.solution
+                          or edge[::-1] in self.solution else "gray"
+                          for edge in self.edges}
+
+        nx.set_edge_attributes(plot_d, edge_color, "edge_color")
+        line_color = "edge_color"
+
+        if width is None:
+            width = {(labels[edge[0]], labels[edge[1]]): 2
+                     if edge in self.solution else 0.1
+                     for edge in self.edges}
+
+        nx.set_edge_attributes(plot_d, width, "edge_width")
+        line_width = "edge_width"
 
         graph = bkplt.from_networkx(plot_d, nx.circular_layout)
         graph.node_renderer.glyph = mod.Circle(size=node_size,

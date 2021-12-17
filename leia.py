@@ -77,24 +77,12 @@ def main(plot=None):
 
     labels = {node: "{} ({})".format(node[1][1].title(), node[0][1].lower())
               for node in leia.nodes}
-    node_colors = {node: "green" if node in leia.path else "lightgray"
-                   for node in leia.nodes}
-    edge_colors = {edge: "limegreen" if edge in leia.solution
-                   or edge[::-1] in leia.solution else "gray"
-                   for edge in leia.edges}
-    edge_widths = {edge: 2 if edge in leia.solution else 0.1
-                   for edge in leia.edges}
 
     if plot == "matplotlib":
-        leia.plot(labels=labels, arrows=False, font_size=9,
-                  node_color=node_colors.values(),
-                  edge_color=edge_colors.values(),
-                  width=list(edge_widths.values()))
+        leia.plot(labels=labels, font_size=9)
 
     elif plot == "bokeh":
-        leia.plot_bokeh(labels=labels, node_color=node_colors,
-                        node_size=10, edge_color=edge_colors,
-                        width=edge_widths)
+        leia.plot_bokeh(labels=labels,  node_size=25)
 
     elif plot:
         print(f"Unknown plotting method: {plot}")

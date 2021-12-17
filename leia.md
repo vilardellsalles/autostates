@@ -3,10 +3,10 @@
 In the [PlanSys 2
 Tutorial](https://intelligentroboticslab.gsyc.urjc.es/ros2_planning_system.github.io/tutorials/docs/terminal_usage.html)
 pages there is a simple example on how to use Plansys 2 from the terminal. In
-the example, a discharged robot named LEIA has to be moved from the entrance of
+the example, a discharged robot named LEIA has to be moved from the entrance to
 the bathroom, but first it has to be recharged. 
 
-The LEIA example is implemented in [leya.py](./leia.py). It can be executed by
+The LEIA example is implemented in [leia.py](./leia.py). It can be executed by
 typing:
 
 ```sh
