@@ -8,12 +8,16 @@ import bokeh.models as mod
 
 
 class Domain(nx.DiGraph):
-    def __init__(self, actions, *args, **kwargs):
+    def __init__(self, actions=None, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
 
-        self.actions = {action.name: action for action in actions}
         self.path = []
         self.solution = []
+        if actions is None:
+            self.actions = dict()
+            return
+        else:
+            self.actions = {action.name: action for action in actions}
 
         stack = set()
         for action in actions:
@@ -88,11 +92,7 @@ class Domain(nx.DiGraph):
 
         # Unfortunately, nodes in Bokeh have to be strings or ints
 
-        plot_d = nx.DiGraph()
-        plot_d.add_nodes_from([(labels[node], dict(node))
-                               for node in self.nodes])
-        plot_d.add_edges_from([(labels[edge[0]], labels[edge[1]])
-                               for edge in self.edges])
+        plot_d = nx.relabel.relabel_nodes(self, labels)
 
         tooltips = []
         for node, data in plot_d.nodes(data=True):
