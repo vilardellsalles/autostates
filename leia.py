@@ -12,10 +12,6 @@ class Move(Action):
         self.origin = origin.upper()
         self.destination = destination.upper()
 
-    @property
-    def name(self):
-        return "{}->{}".format(self.origin, self.destination)
-
     def requires(self):
         return {f"{self.device}_AT": self.origin}
 
@@ -33,10 +29,6 @@ class Charge(Action):
 
         self.device = device.upper()
         self.location = location.upper()
-
-    @property
-    def name(self):
-        return "{}->{}".format(self.device, self.location)
 
     def requires(self):
         return {f"{self.device}_AT": self.location, "BATTERY": "LOW"}

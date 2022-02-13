@@ -14,10 +14,6 @@ class Switch(Action):
         self.device = device
         self.goal = goal
 
-    @property
-    def name(self):
-        return "{}->{}".format(self.device, self.goal)
-
     def requires(self):
         goal = "OFF" if self.goal == "ON" else "ON"
         return {"LIGHT_{}".format(self.device): goal}
