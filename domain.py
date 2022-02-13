@@ -17,7 +17,7 @@ class Domain(nx.DiGraph):
             self.actions = dict()
             return
         else:
-            self.actions = {action.name: action for action in actions}
+            self.actions = {id(action): action for action in actions}
 
         stack = set()
         for action in actions:
@@ -42,7 +42,7 @@ class Domain(nx.DiGraph):
                     destination.update(provides)
                     new_node = tuple(sorted(destination.items()))
                     if new_node in self.nodes:
-                        edges += [(node, new_node, {"name": action.name})]
+                        edges += [(node, new_node, {"id": id(action)})]
 
         self.add_edges_from(edges)
 
@@ -53,7 +53,7 @@ class Domain(nx.DiGraph):
 
         self.solution = list(zip(self.path[:-1], self.path[1:]))
         for step, (origin, destination) in enumerate(self.solution, 1):
-            name = self[origin][destination]["name"]
+            name = self[origin][destination]["id"]
             print("Step {}:".format(step), end=" ")
             self.actions[name].execute()
 
